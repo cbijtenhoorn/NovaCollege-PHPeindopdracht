@@ -101,7 +101,7 @@ if(isset($_GET['file'])){
 //        echo $imgpath . '<br>';
 //        echo getcwd() . '<br>';
 //        echo $file;
-        echo '<img src="' . $imgpath . '" alt="afbeelding">';
+        echo '<img src="' . $imgpath . '" height="70%">';
 
     }
 
