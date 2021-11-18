@@ -1,0 +1,27 @@
+body{
+    background-color: cadetblue;
+    font-family: "Trebuchet MS";
+}
+
+#breadcrumb{
+    padding: 1%;
+    background-color: cadetblue;
+    width: 90vw;
+    height: 10vh;
+}
+
+#dirfiles{
+    padding: 1%;
+    float: left;
+    background-color: cadetblue;
+    width: 40vw;
+    height: 90vh
+}
+
+#contents{
+    padding: 1%;
+    float: right;
+    background-color: lightblue;
+    width: 50vw;
+    height: 90vh;
+}
