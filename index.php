@@ -50,6 +50,9 @@ foreach ($breadcrumbs as $crumb) {
     $breadcrumbbuilder .= "/" . $crumb;
     echo '<a href="' . "index.php?dir=" . getcwd() . $breadcrumbbuilder . '">' . $crumb . '</a> ➜ ';
 }
+if (isset($_GET['file'])) {
+    echo $_GET['file'];
+}
 echo '</div>';
 
 // ---------------------------------------------------------------------------------------------------------------------
