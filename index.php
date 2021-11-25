@@ -6,9 +6,9 @@
 <body>
 
 <?php
-function human_filesize($bytes, $dec = 2)
+function human_filesize($bytes, $dec = 2) //Functie die bytes omzet naar "normale" waarden
 {
-    $size   = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+    $size = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
     $factor = floor((strlen($bytes) - 1) / 3);
 
     return sprintf("%.{$dec}f", $bytes / pow(1024, $factor)) . @$size[$factor];
@@ -30,13 +30,35 @@ if (isset($_GET['dir'])) {
     $cwd = $_GET['dir'];
     $cwd = realpath($cwd);
 }
+// beveiliging zodat je niet hoger kunt dan de current working directory, ook niet als je /.. in de url typt.
+if(!str_contains($cwd, getcwd())){
+    $cwd = getcwd();
+}
 
 // alle bestanden en mappen scannen van de huidige directory, de . en .. er af halen
 $all = scandir($cwd);
 $all = array_slice($all, 1);
 
+// ---------------------------------------------------------------------------------------------------------------------
+
+
+echo '<div id="breadcrumb">';
+$breadcrumbs = explode('\\', str_replace(getcwd(), '', $cwd));
+$breadcrumbbuilder = "";
+echo '<a href="' . "index.php?dir=" . getcwd() . '">' . "root" . '</a>';
+foreach ($breadcrumbs as $crumb) {
+    $breadcrumbbuilder .= "/" . $crumb;
+    echo '<a href="' . "index.php?dir=" . getcwd() . $breadcrumbbuilder . '">' . $crumb . '</a> ➜ ';
+}
+echo '</div>';
+
+// ---------------------------------------------------------------------------------------------------------------------
+
 echo '<div id="dirfiles">';
 
+if ($cwd == getcwd()) {
+    $all = array_slice($all, 1);
+}
 foreach ($all as $item) {
     if (is_dir($cwd . '/' . $item)) {
         echo '[D] <a href="index.php?dir=' . $cwd . '/' . $item . '">' . $item . "</a><br>";
@@ -46,15 +68,13 @@ foreach ($all as $item) {
 }
 echo '</div>';
 
+// ---------------------------------------------------------------------------------------------------------------------
 
 //Informatie over bestand
 echo '<div id="contents"><b>Inhoud:</b><br>';
 
 if (isset($_GET['file'])) {
-    //Bestandsnaam:
     echo 'Bestandsnaam: ' . $_GET['file'] . '<br>';
-
-    //Bestandsgrootte:
     $bytes = filesize($file);
 //    if ($bytes < 1024) {
 //        echo 'Bestandsgrootte: ' . number_format($bytes,1) . ' bytes<br>';
@@ -69,54 +89,39 @@ if (isset($_GET['file'])) {
 //        echo 'Bestandsgrootte: ' . number_format($bytes,1) . 'gB<br>';
 //    }
     echo "Bestandsgrootte: " . human_filesize($bytes) . "<br>";
-
-    //Rechten/Schrijfbaar:
-    if (is_writable($file)){
+    if (is_writable($file)) {
         echo 'Schrijfbaar: Ja<br>';
-    }
-    else{
+    } else {
         echo 'Schrijfbaar: Nee<br>';
     }
-
-    //Laatst aangepast:
     echo 'Laatst aangepast op: ' . date("j-m-y", filemtime($file)) . '<br>';
-
-    //Bestandstype:
     echo 'Bestandstype: ' . mime_content_type($file) . '<br><br>';
 }
 
-
-
-
-
-if(isset($_GET['file'])){
+if (isset($_GET['file'])) {
     $mime = explode('/', mime_content_type($file))[0];
+    $phpcheck = explode('/', mime_content_type($file))[1];
 
     // Weergeven van afbeelding
-    if($mime == "image"){
-        //echo 'Hoi ik ben een afbeelding ja leuk' . '<br>';
-        //echo $file;
+    if ($mime == "image") {
         $imgpath = str_replace(getcwd(), '', $file);
         $imgpath = ltrim($imgpath, '\\');
-//        echo $imgpath . '<br>';
-//        echo getcwd() . '<br>';
-//        echo $file;
-        echo '<img src="' . $imgpath . '" height="70%">';
 
+        echo '<img src="' . $imgpath . '" height="70%">';
     }
 
     // Bewerken van tekstbestanden
     if ($mime == "text") {
-        //echo "Leuk! Ik ben een bestand wat je mag openen!<br>";
         $inhoud = file_get_contents($file);
 
         echo '<form method="post">
-        <textarea name="textadd" rows="20" cols="20">' . htmlentities($inhoud) . '</textarea><br>
-        <input type="submit" value="Aanpassen">
-        </form>';
+        <textarea name="textadd" rows="20" cols="20">' . htmlentities($inhoud) . '</textarea><br>';
+        if($phpcheck != "html"){
+           echo '<input type="submit" value="Aanpassen">';
+        }
+        echo '</form>';
     }
 }
 echo '</div>';
 ?>
-
 </body>

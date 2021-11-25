@@ -1,11 +1,11 @@
 body{
-    background-color: cadetblue;
+    background-color: pink;
     font-family: "Trebuchet MS";
 }
 
 #breadcrumb{
     padding: 1%;
-    background-color: cadetblue;
+    background-color: pink;
     width: 90vw;
     height: 10vh;
 }
@@ -13,7 +13,7 @@ body{
 #dirfiles{
     padding: 1%;
     float: left;
-    background-color: cadetblue;
+    background-color: pink;
     width: 40vw;
     height: 90vh
 }
@@ -21,7 +21,7 @@ body{
 #contents{
     padding: 1%;
     float: right;
-    background-color: lightblue;
+    background-color: antiquewhite;
     width: 50vw;
     height: 90vh;
 }
